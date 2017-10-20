@@ -1,28 +1,3 @@
-﻿/*
-;League Tools V6
-;Written by Ruevil2
-;Last update: 2017-07-01
-;
-;Tools:
-;	Auto-lauch, Auto-Login, Auto-Start Queue, Auto-Accept Game
-;	Champion List:
-;		Provides links to the top strategy webpages for each champion,
-;		list is automatically updated via Riot Official API
-;	Champion Sales:
-;		Shows champions currently on sale and the price differences
-;	Skin Sales:
-;		Shows skins currently on sale and their prices
-;	Streams:
-;		Shows a list of currently online professional streamers
-;	Screen-Edge:
-;		This disables the mouse from moving the camera when it touches
-;		the edge of the screen. For people who use an alternate setup
-;		for camera movement.
-*/
-
-;#Include, ObjTree.ahk
-;#Include, Attach.ahk
-;WinWaitClose % "ahk_id " ObjTree(ChampDataObj)
 
 If not A_IsAdmin
 {
@@ -37,18 +12,14 @@ If not A_IsAdmin
 CoordMode,Mouse,Window
 CoordMode,Pixel,Window
 OnExit, ExitSub
-ver = v6.0
+ver = v6.03
 Confine = True
 UpdateCheck = 0
-;Menu, Tray, NoStandard
+Menu, Tray, NoStandard
 Menu, Tray, UseErrorLevel
 Menu, Tray, Tip, League Tools %ver%
 ComObjError(0)
 WebRequest := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-
-TwitchStreamers := "TSM_hauntzer,tsm_svenskeren,tsm_bjergsen,tsm_doublelift,imt_huni,imt_reignover,sprattel_lol,pobelter,imt_wildturtle,imt_adrian,c9balls,c9rush,jensen,c9sneaky,hail9,bunnyfufuu,zionspartan,xmithie,lolwhoishe,stixxay,aphromoo,nrgimpact,moonlol,nrggbm,altec,konkwon,seraph,crumbzz,freezecz,hakuholol,birryyu,kireiop,shiphtur,apollo_price,kiwikid,echokfo,hard_lol,froggen,keithmcbrief,lourlo,liquiddardoch,fenixl0l,piglet,matlife_na,odoamne,jankos,yoosangwook,lolvander,kikis1205,trick_lol,perrkz,emperorkr,lolhybrid,cabochardlol,shooklol,nukeducklol,kasinglol,gamsulol,fnc_spirit,fabiantje,rekkles,klajbajk,godgilius,eikap,mrrallez,trashylol,sencux,kobbelol,airwaks,betsy_lol,tabzzhd,noxiak,smittyj1,pepiinero,vizicsacsi,l0ulex,steeelback,wunderwearisfame,yellowstarr,h2khjarnan,watdefox,nightblue3,trick2g,imaqtpie,valkrin,azoh,tsm_dyrus,nervarien,saintvicious,voyboy,scarra,IWillDominate,mushisgosu,meteos,xpecial,quaslol,krepo"
-AzubuStreamers := "Amazing,sOAZ,xPeke,Niels,Mithy,Wisdom,Hipo,Crush,Edge,Guger,Soul,flawless,Sasin,Nuclear,Secret,Flame,Chaser,CoCo,Fury,Pure,Untara,Bubbling,Bdd,Kramer,MadLife,Cuvee,Ambition,Crown,CoreJJ,Wraith,Duke,Blank,Faker,Bang,Wolf,ssumday,Score,Fly_Kr,Arrow,Ignar,TrAce,Winged,Kuzan,Pilot,Chei,Mash,gate,Ninja"
-YouTubeStreamers := ""
 
 IfExist C:\Riot Games\league of legends\LeagueClient.exe
 {
@@ -71,7 +42,7 @@ else
 	}
 }
 Menu, Tray, Icon, %RiotPathF%, 1
-TrayTip, League Tools %ver%, League launcher found., %tsecs%
+;TrayTip, League Tools %ver%, League launcher found., %tsecs%
 LauncherNotFound:
 
 IfNotExist, %A_ScriptDir%\Data
@@ -127,9 +98,12 @@ If RiotPathF
 		Menu, Accounts, NoDefault
 		if !ErrorLevel
 		   Menu, Tray, Add, Select Account, :Accounts
-		Menu, Tray, Add, Login Only, LoginOnly
-		Menu, Tray, Add, Group or Solo, :GroupOrSolo
-		Menu, Tray, Add, Auto Start, :AutoSelection
+		Menu, Tray, Add, Login, LoginOnly
+		;Auto Start not completed
+		;Menu, Tray, Add, Login Only, LoginOnly
+		;Menu, Tray, Add, Group or Solo, :GroupOrSolo
+		;Menu, Tray, Add, Auto Start, :AutoSelection
+		;Menu, Tray, Disable, Auto Start
 	}
 }
 
@@ -141,7 +115,7 @@ Menu, Tray, Add, Reload, ReloadSub
 Menu, Tray, Add, Exit, ExitSub
 
 SetTimer, LoadData, -500
-TrayTip, League Tools %ver%, League Tools loaded. Images will load in the background, %tsecs%
+TrayTip, League Tools %ver%, League Tools loaded., %tsecs%
 return
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -202,6 +176,8 @@ Start(type1, sGroup)
 	;	Ranked Flex
 	;ARAM
 	
+	;Positions are mostly correct and will work well enough. rotating game style not done at all
+	
 	Sleep, 500
 	WinGetPos,,, w, h, A
 	Sleep, 250
@@ -210,7 +186,7 @@ Start(type1, sGroup)
 	MouseClick, left, (w*.10), (h*.05),,0
 	
 	;;;;;;;;;;;;;;;;;;;;;;;;;
-	Sleep, 5000	;Replace this with a check for loaded status
+	Sleep, 3500	;Replace this with a check for loaded status
 	;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 	If (InStr(type1, "5v5"))
@@ -254,7 +230,7 @@ Start(type1, sGroup)
 	MouseClick, left, (w*.421),(h*.944),,0
 	
 	;;;;;;;;;;;;;;;;;;;;;;;;;
-	Sleep, 8000	;Replace this with a check for loaded status
+	Sleep, 5000	;Replace this with a check for loaded status
 	;;;;;;;;;;;;;;;;;;;;;;;;;
 	
 	if sGroup = 1 
@@ -275,6 +251,7 @@ Start(type1, sGroup)
 AutoAccept(q)
 {
 	;Get new Accept buttton color and relative coords
+	return
 	
 	If q < 120
 		q := 120
@@ -287,11 +264,9 @@ AutoAccept(q)
 		IfWinActive, ahk_class RCLIENT
 		{
 			WinGetPos,,, mWi, mHi, A
-			;635,555  1280,720  0.496,0.770
-			;0x133B4D
 			x := (mWi * 0.495)
 			y := (mHi * 0.769)
-			TrayTip, League Tools %ver%, % "Color Distance: " Distance(colorA, b_Play)
+			;TrayTip, League Tools %ver%, % "Color Distance: " Distance(colorA, b_Play)
 			If ColorCross(x, y, colorB, cDist)
 			{
 				Sleep, 400
@@ -311,6 +286,94 @@ AutoAccept(q)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+
+Login(u="", p="", installloc="")
+{
+	StartColor := "0x28231E"
+	Run, %installloc%
+	
+	WinWaitActive ahk_class RCLIENT
+	b = 0
+	Loop,
+	{
+		Sleep, 250
+		if WinExist("ahk_class RCLIENT")
+		{
+			WinActivate, ahk_class RCLIENT
+			WinGetPos,,, w, h, A
+			PixelGetColor, b_Play, (w*.85), (h*.27), RGB
+			colorA := "0x28231E"
+			ColDist := Distance(colorA, b_Play)
+			;TrayTip, League Tools %ver%,  Color Distance: %ColDist%
+			If ColDist < 45
+				break
+			
+		}
+	}
+	Sleep, 100
+	WinActivate, ahk_class RCLIENT
+	WinWaitActive ahk_class RCLIENT
+	WinGetPos,,, w, h, A
+	b = 0
+	Sleep, 100
+	If !p
+		InputBox, temppass, Mot de passe, Entrez votre mot de passe. Il ne sera pas sauvegarder.
+	Sleep, 100
+	WinActivate, ahk_class RCLIENT
+ 
+	If u
+	{
+		MouseClick, Left, (w*.85), (h*.27),,0
+		MouseClick, Left, (w*.85), (h*.27),,0
+		Sleep, 100
+		SendRaw, %u%
+	}
+	else
+		return
+	Sleep, 100
+	Send {Tab}
+	Sleep, 100
+	If temppass
+		SendInput {Raw}%temppass%
+	If p
+	{
+		ObfPass := Obf(p, 0, 1234)
+		SendInput {Raw}%ObfPass%
+	}
+	else
+		return
+	temppass := 
+	ObfPass := 
+	Sleep, 100
+	Send {enter}
+	Sleep, 100
+	
+	;Checking for loaded client
+	Loop,
+	{
+		Sleep, 500
+		IfWinActive, ahk_class RCLIENT
+		{
+			WinGetPos,,, w, h, A
+			PixelGetColor, b_Play, (w*.10), (h*.05), RGB
+			colorA := "0x16313F"
+			ColDist := Distance(colorA, b_Play)
+			;TrayTip, League Tools %ver%,  Color Distance: %ColDist%
+			If ColDist < 45
+				break
+		}
+	}
+	return
+}
+
+LoginOnly:
+{
+	global t := A_ThisMenuItem
+	If !lgn
+		lgn = 1
+	Login(Login%lgn%, Pass%lgn%, RiotpathF)
+}
+return
 
 ChangeVO:
 {	
@@ -403,103 +466,6 @@ Tools:
 }
 return
 
-Login(u="", p="", installloc="")
-{
-	StartColor := "0x28231E"
-	Run, %installloc%
-	
-	WinWaitActive ahk_class RCLIENT
-	b = 0
-	Loop,
-	{
-		Sleep, 250
-		if WinExist("ahk_class RCLIENT")
-		{
-			WinActivate, ahk_class RCLIENT
-			WinGetPos,,, w, h, A
-			
-			;PixelGetColor, colorbtn, (w*.85), (h*.74)
-			;If (ColorCross(w*.85,h*.27, StartColor, 50))
-			;	break
-			
-			;MouseMove, (w*.85), (h*.27)
-			;PixelGetColor, colorbtn, (w*.85), (h*.74)
-			;If colorbtn = 0x28231E
-			;	break
-			
-			
-			PixelGetColor, b_Play, (w*.85), (h*.27), RGB
-			colorA := "0x28231E"
-			ColDist := Distance(colorA, b_Play)
-			TrayTip, League Tools %ver%,  Color Distance: %ColDist%
-			If ColDist < 45
-				break
-			
-		}
-	}
-	Sleep, 100
-	WinActivate, ahk_class RCLIENT
-	WinWaitActive ahk_class RCLIENT
-	WinGetPos,,, w, h, A
-	b = 0
-	Sleep, 100
-	If !p
-		InputBox, temppass, Mot de passe, Entrez votre mot de passe. Il ne sera pas sauvegarder.
-	Sleep, 100
-	WinActivate, ahk_class RCLIENT
- 
-	If u
-	{
-		MouseClick, Left, (w*.85), (h*.27),,0
-		MouseClick, Left, (w*.85), (h*.27),,0
-		Sleep, 100
-		SendRaw, %u%
-	}
-	else
-		return
-	Sleep, 100
-	Send {Tab}
-	Sleep, 100
-	If temppass
-		SendInput {Raw}%temppass%
-	If p
-	{
-		ObfPass := Obf(p, 0, 1234)
-		SendInput {Raw}%ObfPass%
-	}
-	else
-		return
-	Sleep, 100
-	Send {enter}
-	Sleep, 100
-	
-	;Checking for loaded client
-	Loop,
-	{
-		Sleep, 500
-		IfWinActive, ahk_class RCLIENT
-		{
-			WinGetPos,,, w, h, A
-			PixelGetColor, b_Play, (w*.10), (h*.05), RGB
-			colorA := "0x16313F"
-			ColDist := Distance(colorA, b_Play)
-			;TrayTip, League Tools %ver%,  Color Distance: %ColDist%
-			If ColDist < 45
-				break
-		}
-	}
-	return
-}
-
-LoginOnly:
-{
-	global t := A_ThisMenuItem
-	If !lgn
-		lgn = 1
-	Login(Login%lgn%, Pass%lgn%, RiotpathF)
-}
-return
-
 Sales:
 {
 	;MsgBox % A_ThisMenu "`n`n" A_ThisMenuItem
@@ -532,6 +498,12 @@ Guides:
 	
 	;SoloMid
 	StringReplace, c, CName, %A_Space%, , All
+
+	;LolCounter
+	IfEqual, A_ThisMenuItem, LolCounter, Run, http://lolcounter.com/champions/%n%
+	
+	;Op.GG
+	IFEqual, A_ThisMenuItem, Op.GG, Run, http://na.op.gg/champion/%a%
 	
 	;MobaFire - Naming convention changed, non conformative new stylem - Test Guide page
 	IfEqual, A_ThisMenuItem, MobaFire, Run, http://www.mobafire.com/league-of-legends/%n%-guide
@@ -575,60 +547,41 @@ Return
 
 LoadData:
 {
-	key1 := "RGAPI-01f09ca5-45c5-4398-bd8e-0c8deb9e38c0"
-	
 	If ChampList && !(IsObject(ChampDataObj)) && !ChampListLoaded && !ChampListError
 	{
 		;TrayTip, League Tools %ver%, Getting champion list.
-		ChampDataURL := "https://na1.api.riotgames.com/lol/static-data/v3/champions?dataById=true&api_key=" key1
-		
+		URL := "https://ddragon.leagueoflegends.com/api/versions.json"
+		WebRequest.Open("GET", URL, true)
+		WebRequest.Send()
+		WebRequest.WaitForResponse()
+		VersionDataObj := JSON.Load(WebRequest.ResponseText)
+		ChampDataURL := "http://ddragon.leagueoflegends.com/cdn/" VersionDataObj[1] "/data/en_US/champion.json"
 		WebRequest.Open("GET", ChampDataURL)
-		x := 0
-		ChampDataURLGet:
 		WebRequest.Send()
 		ChampData := WebRequest.ResponseText()
 		If ChampData
 		{
-			If InStr(ChampData, "status_code")
-			{
-				MsgBox % ChampData
-				Sleep, 100
-				x++
-				If x = 3
-					Goto, ChampError
-				else
-					Goto ChampDataURLGet
-			}
+			Try
+				ChampDataObj := JSON.Load(ChampData)
+			catch e
+				Goto, ChampError
 		}
 		Else
 			Goto ChampError
-		Try
-			ChampDataObj := JSON.Load(ChampData)
-		catch e
-			Goto, ChampError
 		
-		FreeChampURL := "https://na1.api.riotgames.com/lol/platform/v3/champions?freeToPlay=true&api_key=" key1
+		FreeChampURL := "https://www.championrotation.net/"
 		WebRequest.Open("GET", FreeChampURL)
-		x := 0
-		FreeChampURLGet:
 		WebRequest.Send()
-		FreeChampData := WebRequest.ResponseText()
+		StringReplace, FreeChampData, % WebRequest.ResponseText(), `", , All			;"
 		If FreeChampData
 		{
-			If InStr(FreeChampData, "status_code")
+			P := 0
+			Loop,
 			{
-				Sleep, 100
-				x++
-				If x = 3
-					Goto ChampError
-				else
-					Goto FreeChampURLGet
-			}
-			else
-			{
-				FreeChampObj := JSON.Load(FreeChampData)
-				For k, v in FreeChampObj.champions
-					ChampDataObj.data[v.id].freeToPlay := true
+				P := RegExMatch(FreeChampData, "i)name itemprop=name>(.*?)<", ChampName, (P + 5))
+				If !P
+					break
+				ChampDataObj.data[ChampName1].freeToPlay := True
 			}
 		}
 		else
@@ -641,11 +594,13 @@ LoadData:
 			Menu, %cName%, Add, %cTitle%, Guides
 			Menu, %cName%, Disable, %cTitle%
 			Menu, %cName%, Add
+			Menu, %cName%, Add, OP.GG, Guides
 			Menu, %cName%, Add, MobaFire, Guides
 			Menu, %cName%, Add, LOLKing, Guides
 			Menu, %cName%, Add, LOLNexus, Guides
 			Menu, %cName%, Add, SoloMid, Guides
 			Menu, %cName%, Add, ProBuilds, Guides
+			Menu, %cName%, Add, LolCounter, Guides
 		}
 		
 		For k, v in ChampDataObj.data
@@ -789,7 +744,7 @@ LoadData:
 		DDver := ChampDataObj.version
 		For k,v in ChampDataObj.data
 		{
-			n1 := v.key
+			n1 := v.id
 			n2 := v.name
 			IfNotExist, %A_ScriptDir%\Data\ChampIcons\%n1%.png
 			{
@@ -851,8 +806,6 @@ StreamCheck:
 	'youtube': 'https://gdata.youtube.com/feeds/api/users/lolchampseries/live/events?v=2&itemsPerPage=100&inline=true&alt=json&status=active'
 	*/
 	
-	;TwitchURL := "https://api.twitch.tv/kraken/streams?channel=" TwitchStreamers "&client_id=pbta8w0375tir2u2victdhoe6ip4bbk"
-	;TwitchURL := "https://api.twitch.tv/kraken/streams?game=League+of+Legends&stream_type=live&client_id=pbta8w0375tir2u2victdhoe6ip4bbk"
 	TwitchURL := "https://api.twitch.tv/kraken/streams?game=League+of+Legends&limit=100&stream_type=live&client_id=pbta8w0375tir2u2victdhoe6ip4bbk"
 	WebRequest.Open("GET", TwitchURL)
 	WebRequest.Send()
@@ -861,32 +814,6 @@ StreamCheck:
 		TwitchDataObj := JSON.Load(TwitchData)
 	catch e
 		TrayTip, League Tools %ver%, There was a problem loading Twitch streamers.
-	
-	
-	/*
-	url: 'http://api.azubu.tv/public/channel/live/list/game/league-of-legends',
-    //favurl: 'https://api.twitch.tv/kraken/streams/{id}',
-    id: 'azubu',
-    name: 'Azubu',
-    img: '../image/azubu.png',
-    errorImg: '../image/errazubu.png',
-	*/
-	
-	/*
-	;AzubuTV is dead, redirects twice now to inactive(ish) site(smashbox.tv)
-	;AzubuURL := "http://api.azubu.tv/public/channel/list?channels=" AzubuStreamers
-	;AzubuURL := "http://api.smashcast.tv/public/channel/list?channels=" AzubuStreamers
-	AzubuURL := "https://gdata.youtube.com/feeds/api/users/lolchampseries/live/events?v=2&itemsPerPage=100&inline=true&alt=json&status=active"
-	WebRequest.Open("GET", AzubuURL)
-	WebRequest.Send()
-	AzubuData := WebRequest.ResponseText()
-	Try
-		AzubuDataObj := JSON.Load(AzubuData)
-	catch e
-		TrayTip, League Tools %ver%, There was a problem loading Azubu streamers.
-	;WinWaitClose % "ahk_id " ObjTree(TwitchDataObj)
-	;MsgBox % AzubuData
-	*/
 	
 	;Create Menus and Attach
 	Menu, TStreams, Delete
@@ -909,17 +836,10 @@ StreamCheck:
 		}
 	}
 	
-	/*
-	Loop % AzubuDataObj.data.MaxIndex()
-	{
-		If AzubuDataObj.data[A_Index].is_live
-			Menu, AStreams, Add, % AzubuDataObj.data[A_Index].user.username, Tools
-	}
-	*/
-	
 	Menu, Pro Streams, Add, AzubuTV, :AStreams
 	Menu, Pro Streams, Add, TwitchTV, :TStreams
-	Menu, Tray, Insert, Login Only, Pro Streams, :Pro Streams
+	;Menu, Tray, Insert, Login, Pro Streams, :Pro Streams
+	Menu, Tray, Insert, Select Account, Pro Streams, :Pro Streams
 	SetTimer, StreamCheck, -100000
 }
 return
@@ -945,7 +865,7 @@ UpdateCheck:
 	RegExMatch(Data, "i)<title>League Tools (.*?) ", Version)
 	
 	If !(Version1 = ver)
-		Traytip, League Tools %ver%, There is an update available!, 2
+		Traytip, League Tools %ver%, League Tools update available!, 2
 }
 return
 
@@ -965,7 +885,6 @@ SettingsSub:
 	Gui, Settings: Add, Text, x35 y110 w75 h20 +0x200, Reload Script:
 	Gui, Settings: Add, Edit, x130 y110 w60 h20 vReloadKey, %ReloadKey%
 
-	Gui, Settings: Add, Text, x10 y140 w80 h20 +0x200, API Call Settings:
 	Gui, Settings: Add, Text, x35 y160 w60 h20 +0x200, Region
 	Reg := "NA"
 	RegList := "RU|TR|BR|OCE|LAS|EUNE|EUW|NA|KR|LAN|"
@@ -1004,9 +923,6 @@ SettingsSub:
 	
 	Gui, Settings: Add, Text, x35 y340 w75 h20 +0x200, Sales
 	Gui, Settings: Add, Edit, x130 y340 w60 h20 vSales, %Sales%
-	
-	Gui, Settings: Add, Text, x10 y392 w60 h20 +0x200, API Key:
-	Gui, Settings: Add, Edit, x72 y392 w215 h20 vkey1, %key1%
 	
 	Gui, Settings: Add, Text, x200 y8 w130 h20 +0x200, Login Information:
 	Gui, Settings: Add, Listview, x224 y32 w249 h300 gLoginChange AltSubmit -Hdr, Auto Login Information:|Pass
@@ -1050,8 +966,8 @@ SettingsOK:
 	
 	Gui, Settings: Destroy
 	Menu, Accounts, Delete
-	Menu, Login Only, Delete
-	Menu, Group or Solo, Delete
+	;Menu, Login, Delete
+	;Menu, Group or Solo, Delete
 	Loop,
 	{
 		If Login%A_Index%
@@ -1060,11 +976,17 @@ SettingsOK:
 			break
 	}
 	
-	Menu, Tray, Insert, Screenedge Off, Auto Start, :AutoSelection
-	Menu, Tray, Insert, Screenedge On, Auto Start, :AutoSelection
-	Menu, Tray, Insert, Auto Start, Group or Solo, :GroupOrSolo
-	Menu, Tray, Insert, Group or Solo, Login Only, LoginOnly
-	Menu, Tray, Insert, Login Only, Select Account, :Accounts
+	;Menu, Tray, Insert, Screenedge Off, Auto Start, :AutoSelection
+	;Menu, Tray, Insert, Screenedge On, Auto Start, :AutoSelection
+	;Menu, Tray, Insert, Auto Start, Group or Solo, :GroupOrSolo
+	;Menu, Tray, Insert, Group or Solo, Login Only, LoginOnly
+	Menu, Tray, Insert, Login, Select Account, :Accounts
+}
+return
+
+SettingsCancel:
+{
+	Gui, Settings: Destroy
 }
 return
 
@@ -1090,12 +1012,6 @@ LoginChange:
 	
 	If (A_GuiEvent = "Normal")
 		global SelectedRow := A_EventInfo
-}
-return
-
-SettingsCancel:
-{
-	Gui, Settings: Destroy
 }
 return
 
@@ -1163,8 +1079,6 @@ QueueWaitTime=300
 ChampList=1
 Sales=1
 Streams=1
-[Keys]
-Key1=RGAPI-ee2fc4ce-1326-4233-97bc-0dd6def40833
 [Hotkeys]
 Login1Key=F7
 Login2Key=F8
@@ -1189,12 +1103,9 @@ ReadSettings:
 	IniRead, ReStartQKey, %A_ScriptDir%\Data\Hotkeys.ini, Hotkeys, ReStartQKey, F10
 	IniRead, ReloadKey, %A_ScriptDir%\INI\Data\Hotkeys.ini, Hotkeys, ReloadKey, F12
 	
-	;Expand Toaster Mode
 	IniRead, ChampList, %A_ScriptDir%\Data\Config.ini, Toaster, ChampList, 1
 	IniRead, Streams, %A_ScriptDir%\Data\Config.ini, Toaster, Streams, 1
 	IniRead, Sales, %A_ScriptDir%\Data\Config.ini, Toaster, Sales, 1
-	;IniRead, ChampSales, %A_ScriptDir%\Data\Config.ini, Toaster, ChampSales, 1
-	;IniRead, SkinSales, %A_ScriptDir%\Data\Config.ini, Toaster, SkinSales, 1
 	
 	Loop,
 	{
@@ -1223,12 +1134,10 @@ WriteSettings:
 	IniWrite, %Loc%, %A_ScriptDir%\Data\Config.ini, Locale, Loc
 	IniWrite, %lgn%, %A_ScriptDir%\Data\Config.ini, DefaultLogin, lgn
 	IniWrite, %QueueWaitTime%, %A_ScriptDir%\Data\Config.ini, QueueTime, QueueWaitTime
-	;Expand Toaster Mode
+	
 	IniWrite, %ChampList%, %A_ScriptDir%\Data\Config.ini, Toaster, ChampList
 	IniWrite, %Sales%, %A_ScriptDir%\Data\Config.ini, Toaster, Sales
 	IniWrite, %Streams%, %A_ScriptDir%\Data\Config.ini, Toaster, Streams
-	;IniWrite, %ChampSales%, %A_ScriptDir%\Data\Config.ini, Toaster, ChampSales
-	;IniWrite, %SkinSales%, %A_ScriptDir%\Data\Config.ini, Toaster, SkinSales
 	
 	IniWrite, %Key1%, %A_ScriptDir%\Data\Config.ini, Keys, Key1
 	Loop,
@@ -1575,4 +1484,3 @@ class JSON
 
 F12::
 	reload
-

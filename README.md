@@ -1,36 +1,27 @@
-# League Tools V6.0
+# League Tools V6.03
 Created by Ruevil2  
 
 # Features: 
 (V6 is a complete rewrite, all of these tools are subject to change)
 
 Auto-Login  
-Auto-Accept EULA  
-Auto-Restart League if it is open  
 Multiple Account Support  
 -- Handles any number of accounts  
--- Choose account from tray menu, defaults to first account upon opening  
-Auto-Join Queue  
-Auto Accept Game  
+-- Choose account from tray menu, defaults to first account upon opening   
 No ImageSearch - No external files to download  
 Scales to ANY resolution  
 Scales to ANY launcher size  
 Scales to CPU speed  
-Automatic Champ List Update Via Riot Official API  
--- Champ List language changes with region and locale  
--- Some regions have multiple language options - Not all languages are available for all regions  
--- Links to 5 Different build pages for each champion  
--- Additional links added for korean and russian users to native language  
+Automatic Champ List Update Via Riot Official API   
+-- Links to 6 Different build pages for each champion  
 -- Free champions are indicated by a larger icon  
 Screen-Edge Move  
--- This prevents the mouse from moving your view when it touches the edge of the screen.  
--- This now only works inside the league window  
+-- This prevents the mouse from moving your view when it touches the edge of the screen.    
 Champion Sales  
--- Shows current champion sales in a list  
--- Clicking has no effect yet.  
+-- Shows current champion sales in a list   
 Skin Sales  
 -- Shows current skin sales in a list  
--- Clicking one of these links shows a pic of the skin  
+-- Clicking one of these links shows a splash image of the skin  
 
 
 # Default HotKeys:
@@ -59,9 +50,7 @@ image of the champion skin.
 This checks Twitch.tv and Azubu.tv for currently online pro League streamers. Feel free to ask for  
 streamers to be added to these lists. Only displays streamers that are actively online. Updates every 5 minutes.  
   
-Twitch: Returns top 100 streams, try to add viewer count?  
-  
-Azubu: (No longer functioning)  
+Twitch: Returns top 100 streams, sorted by current viewer count   
   
 
 # Account Select:
@@ -74,12 +63,6 @@ Can support, essentially, an unlimited amount of accounts.
 Automatically starts League client and logs in using selected credentials. If this menu  
 does not appear, there was a problem reading account info from _config.ini, see below for editing tips.  
 This menu is also hidden if the League launcher file path is not found.
-
-
-# Auto Start Queue:
-Automatically starts League client, logs in using selected credentials, initiates selected queue and  
-automatically accepts game. If this menu does not appear, there was a problem reading account info  
-from _config.ini, see below for editing tips. This menu is also hidden if the League launcher file path is not found.
 
 
 # Screen-Edge Toggle:
